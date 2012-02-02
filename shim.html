@@ -13,6 +13,8 @@
 			document.body.clientWidth; // fix bug in webkit: http://qfox.nl/weblog/218
 		</script>
 		<script>
+		c.style.cursor = 'none';
+
 		var
 			//Set width and height of canvas
 			s = c.width = c.height = 500,
@@ -22,9 +24,6 @@
 
 			//Get image data data
 			d = g.data,
-
-			//Counter
-			i = 0,
 
 			//Square of size
 			m = s*s,
@@ -48,16 +47,22 @@
 				y: 100
 			};
 
-			for(; i < m; i++) {
-				x = (i/s)|0;
-				y = (i%s);
+			setInterval(function(i) {
+				for(; i < m; i++) {
+					x = (i%s);
+					y = (i/s)|0;
 
-				if((x-h.x)*(x-h.x) + (y-h.y)*(y-h.y) < h.s) {
-					d[i*4] = d[i*4+3] = 255;
+					//Multiply 255 with true or false to make it red or not
+					d[i*4] = d[i*4+3] = 255 * ((x-h.x)*(x-h.x) + (y-h.y)*(y-h.y) < h.s) + 9;
 				}
-			}
 
-			a.putImageData(g, 0, 0);
+				a.putImageData(g, 0, 0);
+			}, 33, 0);
+
+			c.onmousemove = function(e) {
+				h.x = e.clientX;
+				h.y = e.clientY;
+			}
 		</script>
 	</body>
 </html>
