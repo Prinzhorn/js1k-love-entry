@@ -14,6 +14,7 @@
 		</script>
 		<script>
 		c.style.cursor = 'none';
+		b.style.margin = 0;
 
 		var
 			//Set width and height of canvas
@@ -29,21 +30,27 @@
 			m = s*s,
 
 			//Used inside loop
-			x,y,
+			x, y,
 
-			//Heart object
+			//Some foo for saving bytes in large formulas
+			f,
+
+			//Heart object (see: http://www.mathematische-basteleien.de/heart.htm)
 			//TODO: possible optimization: array instead of object
 			h = {
-				//Length if the
-				r: 50,
+				//Radius of a single circle
+				r: 20,
 
-				//Square radius
-				s: 2500,
+				//Square of radius
+				s: 400,
 
-				//Center x
+				//Side length of square standing on it's point
+				l: 57,
+
+				//Center x (where the two circles meet)
 				x: 100,
 
-				//Center y
+				//Center y (where the two circles meet)
 				y: 100
 			};
 
@@ -52,8 +59,26 @@
 					x = (i%s);
 					y = (i/s)|0;
 
-					//Multiply 255 with true or false to make it red or not
-					d[i*4] = d[i*4+3] = 255 * ((x-h.x)*(x-h.x) + (y-h.y)*(y-h.y) < h.s) + 9;
+					if(
+						//Square standing on it's point
+						( x <= h.x && x >= h.x - h.r*2 && (h.x - h.r*2 - x)/(h.y - y) > .5) ||
+
+						( x >= h.x && x <= h.x + h.r*2 && (h.x + h.r*2 - x)/(y - h.y) > .5) ||
+
+						//Left circle
+						(f=x-h.x-h.r)*f + (f=y-h.y)*f <= h.s ||
+
+						//Right circle
+						(f=x-h.x+h.r)*f + (f=y-h.y)*f <= h.s
+					) {
+						d[i*4] = d[i*4+3] = 255;
+					} else {
+						d[i*4] = d[i*4+3] = 0;
+					}
+
+
+					//Multiply 255 with true/false to make it red/white
+					//d[i*4] = d[i*4+3] = 255 * ((x-h.x)*(x-h.x) + (y-h.y)*(y-h.y) < h.s) + 9;
 				}
 
 				a.putImageData(g, 0, 0);
