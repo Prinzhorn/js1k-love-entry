@@ -18,7 +18,7 @@
 
 		var
 			//Set width and height of canvas
-			s = c.width = c.height = 500,
+			s = c.width = c.height = 1000,
 
 			//Get image data
 			g = a.getImageData(0, 0, s, s),
@@ -32,6 +32,8 @@
 			//Used inside loop
 			x, y,
 
+			M = Math.pow,
+
 			//Some foo for saving bytes in large formulas
 			f,
 
@@ -44,7 +46,7 @@
 				//Square of radius
 				s: 400,
 
-				//Side length of square standing on it's point
+				//Diagonal length of square standing on it's point
 				l: 57,
 
 				//Center x (where the two circles meet)
@@ -59,33 +61,16 @@
 					x = (i%s);
 					y = (i/s)|0;
 
-					if(
-						//Square standing on it's point
-						( x <= h.x && x >= h.x - h.r*2 && (h.x - h.r*2 - x)/(h.y - y) > 1) ||
+					x = x/s/.05 - (h.x*20/s);
+					y = -y/s/.05 + (h.y*21/s);
 
-						( x >= h.x && x <= h.x + h.r*2 && (h.x + h.r*2 - x)/(y - h.y) > 1) ||
-
-						//Left circle
-						(f=x-h.x-h.r)*f + (f=y-h.y-h.r)*f <= h.s ||
-
-						//Right circle
-						(f=x-h.x+h.r)*f + (f=y-h.y-h.r)*f <= h.s
-					) {
-						d[i*4] = d[i*4+3] = 255;
-					} else {
-						d[i*4] = d[i*4+3] = 0;
-					}
-
-
-					//Multiply 255 with true/false to make it red/white
-					//d[i*4] = d[i*4+3] = 255 * ((x-h.x)*(x-h.x) + (y-h.y)*(y-h.y) < h.s) + 9;
+					d[i*4] = d[i*4+3] = 255 * (x*x + 2 * M(y - .8 * Math.sqrt( Math.abs(x) ), 2) < 1) + 9;
 				}
 
 				a.putImageData(g, 0, 0);
-			}, 33, 0);
+			}, 330, 0);
 
 			c.onmousemove = function(e) {
-				return;
 				h.x = e.clientX;
 				h.y = e.clientY;
 			}
