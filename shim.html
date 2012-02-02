@@ -13,12 +13,12 @@
 			document.body.clientWidth; // fix bug in webkit: http://qfox.nl/weblog/218
 		</script>
 		<script>
-		c.style.cursor = 'none';
+		//c.style.cursor = 'none';
 		b.style.margin = 0;
 
 		var
 			//Set width and height of canvas
-			s = c.width = c.height = 1000,
+			s = c.width = c.height = 800,
 
 			//Get image data
 			g = a.getImageData(0, 0, s, s),
@@ -32,47 +32,74 @@
 			//Used inside loop
 			x, y,
 
-			M = Math.pow,
+			k = l = 400,
 
 			//Some foo for saving bytes in large formulas
 			f,
 
-			//Heart object (see: http://www.mathematische-basteleien.de/heart.htm)
-			//TODO: possible optimization: array instead of object
-			h = {
-				//Radius of a single circle
-				r: 20,
-
-				//Square of radius
-				s: 400,
-
-				//Diagonal length of square standing on it's point
-				l: 57,
-
+			//All hearts objects (see: http://www.mathematische-basteleien.de/heart.htm)
+			u = [{
 				//Center x (where the two circles meet)
-				x: 100,
+				x: 400,
 
 				//Center y (where the two circles meet)
-				y: 100
-			};
+				y: 400,
 
-			setInterval(function(i) {
-				for(; i < m; i++) {
+				//Vertical speed
+				v: 4,
+
+				//Horizontal speed
+				h: 4
+			}],
+
+			//Current heart
+			h;
+
+			setInterval(function(i, z) {
+				u.push({
+					x: k,
+					y: l,
+					v: Math.random()*80-40,
+					h: Math.random()*80-40
+				});
+
+				for(z = 0; z < u.length; z++) {
+					h = u[z];
+
+					if(h.x < 0 || h.y < 0 || h.x > s || h.y > s) {
+						u.splice(z--, 1);
+						h = null;
+					} else {
+						h.x += h.v;
+						h.y += h.h;
+					}
+				}
+
+				for(; i < m*4; i++) d[i] = 0;
+
+				for(i = 0; i < m; i++) {
 					x = (i%s);
 					y = (i/s)|0;
 
-					x = x/s/.05 - (h.x*20/s);
-					y = -y/s/.05 + (h.y*21/s);
+					for(z = 0; z < u.length; z++) {
+						h = u[z];
 
-					d[i*4] = d[i*4+3] = 255 * (x*x + 2 * M(y - .8 * Math.sqrt( Math.abs(x) ), 2) < 1) + 9;
+						if(Math.abs(x-h.x) < 35 && Math.abs(y-h.y) < 35) {
+							x = x/s/.02 - (h.x*50/s);
+							y = -y/s/.02 + (h.y*50.5/s);
+
+							if(x*x + 2 * (f = (y - .9 * Math.sqrt( x<0?-x:x ))) * f < 1.5)
+								d[i*4] = d[i*4+3] = 255;
+						}
+					}
 				}
 
 				a.putImageData(g, 0, 0);
-			}, 330, 0);
+			}, 33, 0);
 
 			c.onmousemove = function(e) {
-				h.x = e.clientX;
-				h.y = e.clientY;
+				k = e.clientX;
+				l = e.clientY;
 			}
 		</script>
 	</body>
