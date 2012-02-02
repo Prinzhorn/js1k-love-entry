@@ -61,15 +61,15 @@
 
 					if(
 						//Square standing on it's point
-						( x <= h.x && x >= h.x - h.r*2 && (h.x - h.r*2 - x)/(h.y - y) > .5) ||
+						( x <= h.x && x >= h.x - h.r*2 && (h.x - h.r*2 - x)/(h.y - y) > 1) ||
 
-						( x >= h.x && x <= h.x + h.r*2 && (h.x + h.r*2 - x)/(y - h.y) > .5) ||
+						( x >= h.x && x <= h.x + h.r*2 && (h.x + h.r*2 - x)/(y - h.y) > 1) ||
 
 						//Left circle
-						(f=x-h.x-h.r)*f + (f=y-h.y)*f <= h.s ||
+						(f=x-h.x-h.r)*f + (f=y-h.y-h.r)*f <= h.s ||
 
 						//Right circle
-						(f=x-h.x+h.r)*f + (f=y-h.y)*f <= h.s
+						(f=x-h.x+h.r)*f + (f=y-h.y-h.r)*f <= h.s
 					) {
 						d[i*4] = d[i*4+3] = 255;
 					} else {
@@ -85,6 +85,7 @@
 			}, 33, 0);
 
 			c.onmousemove = function(e) {
+				return;
 				h.x = e.clientX;
 				h.y = e.clientY;
 			}
