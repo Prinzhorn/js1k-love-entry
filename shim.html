@@ -13,9 +13,51 @@
 			document.body.clientWidth; // fix bug in webkit: http://qfox.nl/weblog/218
 		</script>
 		<script>
-		// start of submission //
-		SCRIPT
-		// end of submission //
+		var
+			//Set width and height of canvas
+			s = c.width = c.height = 500,
+
+			//Get image data
+			g = a.getImageData(0, 0, s, s),
+
+			//Get image data data
+			d = g.data,
+
+			//Counter
+			i = 0,
+
+			//Square of size
+			m = s*s,
+
+			//Used inside loop
+			x,y,
+
+			//Heart object
+			//TODO: possible optimization: array instead of object
+			h = {
+				//Length if the
+				r: 50,
+
+				//Square radius
+				s: 2500,
+
+				//Center x
+				x: 100,
+
+				//Center y
+				y: 100
+			};
+
+			for(; i < m; i++) {
+				x = (i/s)|0;
+				y = (i%s);
+
+				if((x-h.x)*(x-h.x) + (y-h.y)*(y-h.y) < h.s) {
+					d[i*4] = d[i*4+3] = 255;
+				}
+			}
+
+			a.putImageData(g, 0, 0);
 		</script>
 	</body>
 </html>
