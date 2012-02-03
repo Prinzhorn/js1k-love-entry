@@ -15,36 +15,20 @@
 		<script>
 		//c.style.cursor = 'none';
 		//c.style.width = '100%';
-		b.style.margin = 0;
 		//b.style.overflow = 'hidden';
 
-		var
-			//Set width and height of canvas
-			s = c.width = c.height = 800,
+		c.width = c.height = 800;
 
-			//Get image data
-			g = a.getImageData(0, 0, s, s),
+		a.fillStyle='black';
+		a.fillRect(0, 0, 800, 800);
 
-			//Get image data data
-			d = g.data,
+		a.beginPath();
+		a.arc(400, 400, 50, Math.PI*0.8, Math.PI*2);
+		a.arc(500, 400, 50, Math.PI, Math.PI*2.2);
+		a.lineTo(450, 550);
 
-			//Square of size
-			m = s*s,
-
-			//Used inside loop
-			x, y,
-
-			//Some foo for saving bytes in large formulas
-			f;
-
-			a.fillStyle = 'red';
-			a.beginPath();
-			a.arc(400, 400, 50, Math.PI*0.8, Math.PI*2);
-			//a.fill();
-			//a.beginPath();
-			a.arc(500, 400, 50, Math.PI, Math.PI*2.2);
-			a.lineTo(450, 550);
-			a.fill();
+		a.fillStyle = 'red';
+		a.fill();
 
 		</script>
 	</body>
