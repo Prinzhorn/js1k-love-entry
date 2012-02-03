@@ -20,18 +20,21 @@
 
 		var
 			s = c.width = c.height = 800,
-			h = [[1, 400, 400, 'red']],
+			k = s/2,
+			h = [[1, k, k, 'red']],
 			z = 0,
-			x = 400, y = 400;
+			x = k, y = k,
+			t = 0;
 
 		setInterval(function kkk(i, l) {
-			//h.push([0, 400, 400]);
+			t = t + .005;
+			x = y = Math.sin(t)*k/2+k;
 
 			a.clearRect(0, 0, s, s);
 
 			//Remove the FIRST element if the SECOND is big enough
 			h[1]&&(h[1][0] > s)&&h.splice(0, 1);
-			if(h[0]&&h[h.length - 1][0] > 1.15) h.push([1, x, y, 'rgb(' + ((Math.random()*100+155) | 0) + ',0,0)']);
+			if(h[0]&&h[h.length - 1][0] > 1.15) h.push([1, x, y, 'rgb(' + ((Math.random()*55+200) | 0) + ',0,0)']);
 
 
 			for(i = 0; i < h.length; i++) {
@@ -39,8 +42,9 @@
 				l[0] *= 1.1;
 
 				a.fillStyle = l[3];
-				//a.lineWidth = 1;
-				//a.strokeStyle = 'black';
+
+				a.lineWidth = .1;
+				a.strokeStyle = 'black';
 
 				a.beginPath();
 				a.arc(l[1] - l[0], l[2] - l[0], l[0], Math.PI*0.8, Math.PI*2);
@@ -49,16 +53,9 @@
 				a.closePath();
 
 				a.fill();
-				//a.stroke();
+				a.stroke();
 			}
-		}, 500, 0);
-
-
-		c.onmousemove = function(e) {
-			return;
-			x = e.clientX;
-			y = e.clientY;
-		}
+		}, 33, 0);
 		</script>
 	</body>
 </html>
