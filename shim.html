@@ -14,9 +14,9 @@
 		</script>
 		<script>
 		//c.style.cursor = 'none';
-		c.style.width = '100%';
+		//c.style.width = '100%';
 		b.style.margin = 0;
-		b.style.overflow = 'hidden';
+		//b.style.overflow = 'hidden';
 
 		var
 			//Set width and height of canvas
@@ -34,86 +34,18 @@
 			//Used inside loop
 			x, y,
 
-			k = l = 400,
-
 			//Some foo for saving bytes in large formulas
-			f,
+			f;
 
-			//All hearts objects (see: http://www.mathematische-basteleien.de/heart.htm)
-			//Heart: 39x36
-			//TODO: remove (will be spawned anyways)
-			u = [{
-				//Center x (where the two circles meet)
-				x: 400,
+			a.fillStyle = 'red';
+			a.beginPath();
+			a.arc(400, 400, 50, Math.PI*0.8, Math.PI*2);
+			//a.fill();
+			//a.beginPath();
+			a.arc(500, 400, 50, Math.PI, Math.PI*2.2);
+			a.lineTo(450, 550);
+			a.fill();
 
-				//Center y (where the two circles meet)
-				y: 400,
-
-				//Vertical speed
-				v: 4,
-
-				//Horizontal speed
-				h: 4
-			}],
-
-			//Current heart
-			h;
-
-			setInterval(function(i, z) {
-				//Add new heart
-				u.push({
-					x: k,
-					y: l,
-					v: Math.random()*80-40,
-					h: Math.random()*80-40
-				});
-
-				a.fillStyle = 'black';
-				a.fillRect(0, 0, s, s);
-
-				//Get image data
-				g = a.getImageData(0, 0, s, s);
-
-				//Get image data data
-				d = g.data;
-
-				//Iterate all hearts
-				for(z = 0; z < u.length; z++) {
-					h = u[z];
-
-					if(h.x < 0 || h.y < 0 || h.x > s || h.y > s) {
-						u.splice(z--, 1);
-						h = null;
-					} else {
-						h.x += h.v;
-						h.y += h.h;
-					}
-				}
-
-				for(i = 0; i < m; i++) {
-					x = (i%s);
-					y = (i/s)|0;
-
-					for(z = 0; z < u.length; z++) {
-						h = u[z];
-
-						if(Math.abs(x-h.x) < 35 && Math.abs(y-h.y) < 35) {
-							x = x/s/.02 - (h.x*50/s);
-							y = -y/s/.02 + (h.y*50.5/s);
-
-							if(x*x + 2 * (f = (y - .9 * Math.sqrt( x<0?-x:x ))) * f < 1.5)
-								d[i*4] = d[i*4+3] = 255;
-						}
-					}
-				}
-
-				a.putImageData(g, 0, 0);
-			}, 33, 0, 0);
-
-			c.onmousemove = function(e) {
-				k = e.clientX;
-				l = e.clientY;
-			}
 		</script>
 	</body>
 </html>
