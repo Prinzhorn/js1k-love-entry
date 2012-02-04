@@ -13,48 +13,56 @@
 			document.body.clientWidth; // fix bug in webkit: http://qfox.nl/weblog/218
 		</script>
 		<script>
-		//c.style.cursor = 'none';
-		//c.style.width = '100%';
-		//b.style.overflow = 'hidden';
-		b.style.margin = 0;
+		with(b.style){margin=0;overflow='hidden'}
 
 		var
-			s = c.width = c.height = 800,
+			//Set width and height to window size
+			r = c.width = innerWidth,
+			s = c.height = innerHeight,
+
+			//We use the half of width and hide some times
+			j = r/2,
 			k = s/2,
-			h = [[1, k, k, 'red']],
-			z = 0,
-			x = k, y = k,
-			t = 0;
 
-		setInterval(function kkk(i, l) {
-			t = t + .005;
-			x = y = Math.sin(t)*k/2+k;
+			//The array containing the hearts. First heart is centered and red
+			h = [[1, j, k, 'red']],
 
-			a.clearRect(0, 0, s, s);
+			//For computing sine. Will increment over time
+			t = 0,
+
+			P = Math.PI,
+			S = Math.sin;
+
+		setInterval(function(i) {
+			t += .005;
+
+			//TODO
+			//if(t > 1.2) return;
 
 			//Remove the FIRST element if the SECOND is big enough
-			h[1]&&(h[1][0] > s)&&h.splice(0, 1);
-			if(h[0]&&h[h.length - 1][0] > 1.15) h.push([1, x, y, 'rgb(' + ((Math.random()*55+200) | 0) + ',0,0)']);
+			h[1]&&(h[1][0] > k)&&h.splice(0, 1);
 
+			for(;h[i];i++)with(a) {
+				b = h[i];
+				b[0] *= 1.1;
 
-			for(i = 0; i < h.length; i++) {
-				l = h[i];
-				l[0] *= 1.1;
+				fillStyle = b[3];
 
-				a.fillStyle = l[3];
+				lineWidth = .2;
+				strokeStyle = 'black';
 
-				a.lineWidth = .1;
-				a.strokeStyle = 'black';
+				beginPath();
+				arc(b[1] - b[0], c = b[2] - b[0], b[0], P*.8, P*2);
+				arc(b[1] + b[0], c, b[0], P, P*2.2);
+				lineTo(b[1], b[2] + b[0]*2);
+				closePath();
 
-				a.beginPath();
-				a.arc(l[1] - l[0], l[2] - l[0], l[0], Math.PI*0.8, Math.PI*2);
-				a.arc(l[1] + l[0], l[2] - l[0], l[0], Math.PI, Math.PI*2.2);
-				a.lineTo(l[1], l[2] + l[0]*2);
-				a.closePath();
-
-				a.fill();
-				a.stroke();
+				fill();
+				stroke();
 			}
+
+			//Append a new element if the last element is big enough
+			if(h[0]&&h[i-1][0] > 1.15) h.push([1, (c=S(t)/2)*j+j, c*k+k, 'rgb(' + ((Math.random()*55+200) | 0) + ',0,0)']);
 		}, 33, 0);
 		</script>
 	</body>
