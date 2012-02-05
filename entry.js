@@ -22,7 +22,8 @@ setInterval(function(i) {
 	t += .005;
 
 	//Remove the FIRST element if the SECOND is big enough
-	h[1]&&(h[1][0] > j)&&h.splice(0, 1);
+	//h[1]&&h[1][0]>j&&h.splice(0,1);
+	h[1]&&h[1][0]>j&&h.shift();
 
 	for(;h[i];i++)with(a) {
 		b = h[i];
