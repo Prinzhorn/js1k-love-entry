@@ -30,25 +30,42 @@ var
 	//The array containing the hearts
 	h = [],
 
-	//For computing sine. Will increment over time.
-	//And we set the bodys margin to 0 (b is now the body's style prop)
-	t = b.margin = 0,
+	//The array containing the audio
+	m = [],
 
-	P = Math.PI,
-	C = Math.cos;
+	//For computing sine. Will increment over time.
+	//And a counter for the audio index
+	//And we set the bodys margin to 0 (b is now the body's style prop)
+	t = l = b.margin = 0,
+
+	M = Math,
+	P = M.PI,
+	C = M.cos;
 
 
 //Now we can use b and c as usual variables, because we won't need body or canvas
 
+
+//Prepare audio (more bytes, but faster than on the fly)
+for(b = 0; b < 64; b++) {
+	var
+		D = '\0\0',
+		K = 'KNPNK_KNPNK_KOPOK_KOPOK_KNPNKJ_KNPNK_I_JNPNJ_JNPNJ__JKPKJ_JKMKJ'.charCodeAt(b);
+
+	for(c = 0; K < 95 && c < 7e3;) {
+		var v = M.max(-1e4,M.min(1e4,1e6*M.sin(c*M.pow(2,K/12)/695)))/M.exp(c++/3e3);
+		D += String.fromCharCode(v & 255, v >> 8 & 255)
+	}
+
+	m[b] = new Audio('data:audio/wav;base64,UklGRgAAAABXQVZFZm10IBAAAAABAAEAwF0AAIC7AAACABAAZGF0YSBO' + btoa(D));
+}
 
 setInterval(function(i, g) {
 	//Now scope everything to the canvas context, because we are doing a shitload of method calls
 	with(a)
 		//Iterate over all hearts (h[i] will be undefined at some time, which will then trigger restore())
 		//The translation will keep it centered
-		for(save() || translate(-C(t+=.004)*j/2, 0); h[i] || restore(); i++) {
-			//Keep track of the current heart. Saves bytes instead of writing h[i] all the time
-			b = h[i];
+		for(save() || translate(-C(t++/250)*j/2, 0); b = h[i] || restore(); i++) {
 
 			//Make the heart bigger and keep track of the new size, because we need this value often
 			//This value will also come in handy after the loop is finished, because we need the size of the last heart for removing it
@@ -95,8 +112,11 @@ setInterval(function(i, g) {
 
 
 	//Append a new element if the array is empty OR if the last element is big enough
-	(!i || g > 1.2) && (h[i]=[1, (c=C(t)/2)*j+j, k, 'rgb(' + ((Math.random()*55+200) | 0) + ',0,0)']);
+	(!i || g > 1.2) && (h[i]=[1, (c=C(t/250)/2)*j+j, k, 'rgb(' + ((Math.random()*55+200) | 0) + ',0,0)']);
 
 	//Remove the first element if big enough
 	h[0][0]>j&&h.shift();
+
+	//Play next tone if enough time past by
+	(t%6) || m[l++%63].play();
 }, 33, 0);

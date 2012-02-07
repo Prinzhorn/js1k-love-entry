@@ -15,47 +15,29 @@
 		<script>
 		var
 			i = 0,
-			t = 'KNPNK_KNPNK_KOPOK_KOPOK_KNPNKJ_KNPNK_I_JNPNJ_JNPNJ__JKPKJ_JKMKJ',
 			m = [],
 			D,
 			M = Math,
-			C = 12;
+			C = 12,
+			k;
 
 		//Prepare
-		for(;t[i];i++) {
+		for(;i<64;i++) {
 			D = '\0\0';
 
-			var k = 'KNPNK_KNPNK_KOPOK_KOPOK_KNPNKJ_KNPNK_I_JNPNJ_JNPNJ__JKPKJ_JKMKJ'.charCodeAt(i);
+			k = 'KNPNK_KNPNK_KOPOK_KOPOK_KNPNKJ_KNPNK_I_JNPNJ_JNPNJ__JKPKJ_JKMKJ'.charCodeAt(i);
 
-			for(j=0;k<95&&j<8e3;) {
-				v=M.max(-1e4,M.min(1e4,1e6*M.sin(j*M.pow(2,k/C)/695)))/M.exp(j++/3e3);
-				D+=String.fromCharCode(v&255,v>>8&255)
+			for(j=0;k<95&&j<7e3;) {
+				v = M.max(-1e4,M.min(1e4,1e6*M.sin(j*M.pow(2,k/C)/695)))/M.exp(j++/3e3);
+				D += String.fromCharCode(v & 255, v >> 8 & 255)
 			}
 
 			m[i] = new Audio('data:audio/wav;base64,UklGRgAAAABXQVZFZm10IBAAAAABAAEAwF0AAIC7AAACABAAZGF0YSBO' + btoa(D));
 		}
 
-		console.log(m);
-
 		//Play
 		setInterval(function() {
-			m[i % m.length].play();
-
-			/*
-			D="\0\0";
-			//'!"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-			//'___ABCDEFGHIJKL'
-			var k = 'KNPNK_KNPNK_KOPOK_KOPOK_KNPNKJ_KNPNK_I_JNPNJ_JNPNJ__JKPKJ_JKMKJ'.charCodeAt(i);
-
-			for(j=0;k<95&&j<8e3;) {
-				v=M.max(-1e4,M.min(1e4,1e6*M.sin(j*M.pow(2,k/C)/695)))/M.exp(j++/3e3);
-				D+=String.fromCharCode(v&255,v>>8&255)
-			}
-
-			new Audio("data:audio/wav;base64,UklGRgAAAABXQVZFZm10IBAAAAABAAEAwF0AAIC7AAACABAAZGF0YSBO"+btoa(D)).play();
-			*/
-
-			i++;
+			m[i++ % m.length].play();
 		}, 250);
 		</script>
 	</body>
