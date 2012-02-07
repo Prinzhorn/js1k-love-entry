@@ -13,28 +13,50 @@
 			document.body.clientWidth; // fix bug in webkit: http://qfox.nl/weblog/218
 		</script>
 		<script>
-		var i = 0;
-
 		var
-			M=Math,
-			C=12,
-			A='charCodeAt',
-			S='slice',
-			D;
+			i = 0,
+			t = 'KNPNK_KNPNK_KOPOK_KOPOK_KNPNKJ_KNPNK_I_JNPNJ_JNPNJ__JKPKJ_JKMKJ',
+			m = [],
+			D,
+			M = Math,
+			C = 12;
 
+		//Prepare
+		for(;t[i];i++) {
+			D = '\0\0';
+
+			var k = 'KNPNK_KNPNK_KOPOK_KOPOK_KNPNKJ_KNPNK_I_JNPNJ_JNPNJ__JKPKJ_JKMKJ'.charCodeAt(i);
+
+			for(j=0;k<95&&j<8e3;) {
+				v=M.max(-1e4,M.min(1e4,1e6*M.sin(j*M.pow(2,k/C)/695)))/M.exp(j++/3e3);
+				D+=String.fromCharCode(v&255,v>>8&255)
+			}
+
+			m[i] = new Audio('data:audio/wav;base64,UklGRgAAAABXQVZFZm10IBAAAAABAAEAwF0AAIC7AAACABAAZGF0YSBO' + btoa(D));
+		}
+
+		console.log(m);
+
+		//Play
 		setInterval(function() {
-			D="\0\0";
-			var k = "/SN;__/NK;OL/QN;__/OL;NK4L@@_C4_G@OL4SO@__4QN@OL3NB?_G3_K?OL/QN;__/SK;__4OL@__4LC@_G4LC@_G4_C@_G".charCodeAt(i);
+			m[i % m.length].play();
 
-			for(j=0;k<95&&j<1e4;) {
-				v=M.max(-1e4,M.min(1e4,1e6*M.sin(j*M.pow(2,k/C)/695)))/M.exp(j++/5e3);
+			/*
+			D="\0\0";
+			//'!"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+			//'___ABCDEFGHIJKL'
+			var k = 'KNPNK_KNPNK_KOPOK_KOPOK_KNPNKJ_KNPNK_I_JNPNJ_JNPNJ__JKPKJ_JKMKJ'.charCodeAt(i);
+
+			for(j=0;k<95&&j<8e3;) {
+				v=M.max(-1e4,M.min(1e4,1e6*M.sin(j*M.pow(2,k/C)/695)))/M.exp(j++/3e3);
 				D+=String.fromCharCode(v&255,v>>8&255)
 			}
 
 			new Audio("data:audio/wav;base64,UklGRgAAAABXQVZFZm10IBAAAAABAAEAwF0AAIC7AAACABAAZGF0YSBO"+btoa(D)).play();
+			*/
 
 			i++;
-		}, 25);
+		}, 250);
 		</script>
 	</body>
 </html>
