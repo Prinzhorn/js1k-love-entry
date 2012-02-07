@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+	<head>
+		<title>JS1k, 1k demo submission [ID]</title>
+		<meta charset="utf-8" />
+	</head>
+	<body>
+		<canvas id="c"></canvas>
+		<script>
+			var b = document.body;
+			var c = document.getElementsByTagName('canvas')[0];
+			var a = c.getContext('2d');
+			document.body.clientWidth; // fix bug in webkit: http://qfox.nl/weblog/218
+		</script>
+		<script>
+		var
+			M=Math,
+			C=12,
+			A='charCodeAt',
+			S='slice',
+			k="/SN;__/NK;OL/QN;__/OL;NK4L@@_C4_G@OL4SO@__4QN@OL3NB?_G3_K?OL/QN;__/SK;__4OL@__4LC@_G4LC@_G4_C@_G".charCodeAt(0),
+			D="\0\0";
+
+		for(j=0;k<95&&j<1e4;) {
+			v=M.max(-1e4,M.min(1e4,1e6*M.sin(j*M.pow(2,k/C)/695)))/M.exp(j++/5e3);
+			D+=String.fromCharCode(v&255,v>>8&255)
+		}
+
+		new Audio("data:audio/wav;base64,UklGRgAAAABXQVZFZm10IBAAAAABAAEAwF0AAIC7AAACABAAZGF0YSBO"+btoa(D)).play();
+
+		var
+		</script>
+	</body>
+</html>
