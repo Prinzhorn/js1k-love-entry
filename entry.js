@@ -1,4 +1,11 @@
 /*
+ * TODO:
+ * -clipping (more curvy turns)
+ * -remove sine/cosine in favour of heart shaped turns
+ * -music?
+ */
+
+/*
  * Props for the idea on how to draw a heart go to: http://www.mathematische-basteleien.de/heart.htm
  * I also had a working version using single pixels and a function, but drawing arcs and lines is WAY faster.
  *
@@ -23,7 +30,7 @@ var
 	t = b.margin= 0,
 
 	P = Math.PI,
-	S = Math.sin;
+	C = Math.cos;
 
 //Now we can use b and c as usual variables, because we don't need body or canvas
 
@@ -37,11 +44,12 @@ setInterval(function(i, g) {
 
 		//Rotate around center (lean into the turn)
 		//translate(j, k);
-		//rotate(S(t+P/2)/4);
+		//rotate(C(t+P/2)/4);
 		//translate(-j, -k);
 
 		//Keep it centered
-		translate(-S(t)*j/2, -S(t)*k/2);
+		//translate(-C(t)*j/2, -C(t)*k/2);
+		translate(-C(t)*j/2, 0);
 
 		//Iterate over all hearts (h[i] will be undefined at some time)
 		for(;h[i];i++) {
@@ -61,7 +69,7 @@ setInterval(function(i, g) {
 			fillStyle = b[3];
 
 			//Some decent black (=== default strokeStyle) line
-			lineWidth = .2;
+			lineWidth = .4;
 
 			beginPath();
 
@@ -71,13 +79,20 @@ setInterval(function(i, g) {
 			//Right circle part
 			arc(b[1] + g, c, g, P, P*2.2);
 
-			//The right of the lower part (the "peak")
+			//The right lower part of the "peak"
 			lineTo(b[1], b[2] + g*2);
 
-			//Will do the left part. Only needed because we are drawing a stroke! Not for fills.
+			//The left part. Only needed because we are drawing a stroke! Not for fills.
 			closePath();
 
+			globalCompositeOperation = 'destination-out';
+
 			fill();
+
+			globalCompositeOperation = 'source-over';
+
+			fill();
+
 			stroke();
 		}
 
@@ -92,7 +107,8 @@ setInterval(function(i, g) {
 
 
 	//Append a new element if the array is empty OR if the last element is big enough
-	(!i || g > 1.15) && (h[i]=[1, (c=S(t)/2)*j+j, c*k+k, 'rgb(' + ((Math.random()*55+200) | 0) + ',0,0)']);
+	//(!i || g > 1.15) && (h[i]=[1, (c=C(t)/2)*j+j, c*k+k, 'rgb(' + ((Math.random()*55+200) | 0) + ',0,0)']);
+	(!i || g > 1.2) && (h[i]=[1, (c=C(t)/2)*j+j, k, 'rgb(' + ((Math.random()*55+200) | 0) + ',0,0)']);
 
 	//Remove the first element if big enough
 	h[0][0]>j&&h.shift();
