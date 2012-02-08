@@ -90,9 +90,8 @@ setInterval(function(i, g) {
 			)
 		}
 
-
 	//Append a new element if the array is empty OR if the last element is big enough
-	(!i || g > 1.2) && (h[i]=[1, (c=C(t/250)/2)*j+j, k, 'rgb(' + ((Math.random()*55+200) | 0) + ',0,0)']);
+	(!i || g > 1.2) && (h[i]=[1, (c=C(t/250)/2)*j+j, k, 'rgb(' + ((200*(c=C(t/15))*c*c*c+40)|0) + ',0,0)']);
 
 	//Remove the first element if big enough
 	h[0][0]>j&&h.shift();
