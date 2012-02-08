@@ -2,6 +2,7 @@
  * TODO:
  * -clipping (more curvy turns)
  * -remove sine/cosine in favour of heart shaped turns
+ * -music?
  */
 
 /*
@@ -16,7 +17,7 @@
  * Each heart is stored inside an array: [size, x, y, color]
  */
 
-//"with" isn't worth it for two properties.
+//"with" isn't worth it for two properties
 b=b.style;
 b.overflow='hidden';
 
@@ -29,16 +30,36 @@ var
 	//The array containing the hearts
 	h = [],
 
-	//For computing sine. Will increment over time.
-	//And we set the bodys margin to 0 (b is now the body's style prop)
-	t = b.margin = 0,
+	//The array containing the audio
+	m = [],
 
-	P = Math.PI,
-	C = Math.cos;
+	//For computing sine. Will increment over time.
+	//And a counter for the audio index
+	//And we set the bodys margin to 0 (b is now the body's style prop)
+	t = l = b.margin = 0,
+
+	M = Math,
+	P = M.PI,
+	C = M.cos;
 
 
 //Now we can use b and c as usual variables, because we won't need body or canvas
 
+
+//Prepare audio (more bytes, but faster than on the fly)
+for(b = 0; b < 25; b++) {
+	var
+		D = '\0\0',
+		//'KNPNK_KNPNK_KOPOK_KOPOK_KNPNKJ_KNPNK_I_JNPNJ_JNPNJ__JKPKJ_JKMKJ'
+		K = 'KNPNK_KNPNK_KOPOK_KOPOK_'.charCodeAt(b),
+		v;
+
+	for(c = 0; K < 95 && c < 6e3;) D += String.fromCharCode((v = M.max(-1e4,M.min(1e4,1e6*M.sin(c*M.pow(2,K/12)/695)))/M.exp(c++/3e3)) & 255, v >> 8 & 255);
+
+	console.log(D.length);
+
+	m[b] = new Audio('data:audio/wav;base64,UklGRgAAAABXQVZFZm10IBAAAAABAAEAwF0AAIC7AAACABAAZGF0YSBO' + btoa(D));
+}
 
 setInterval(function(i, g) {
 	//Now scope everything to the canvas context, because we are doing a shitload of method calls
@@ -52,7 +73,7 @@ setInterval(function(i, g) {
 			g = b[0] *= 1.1;
 
 			/*
-			 * blame @jedschmidt and @140bytes for this looking so fucked up :-D
+			 * blame @jedschmidt for this looking so fucked up
 			 * we are basically saving semicolons by nesting function calls
 			 * start reading from inner most expression (which is still not exactly the order it executes)!
 			 */
@@ -96,4 +117,7 @@ setInterval(function(i, g) {
 
 	//Remove the first element if big enough
 	h[0][0]>j&&h.shift();
+
+	//Play next tone if enough time past by
+	(t%6) || m[l++%24].play();
 }, 33, 0);
