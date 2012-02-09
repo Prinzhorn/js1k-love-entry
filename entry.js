@@ -24,14 +24,14 @@
 var
 	//Set width and height to window size
 	//We use the half of width and height quite some times
-	j = (c.width = 999)/2,
+	j = x = (c.width = 999)/2,//x = player position
 	k = (c.height = 400)/2,
 
 	//The array containing the hearts
 	h = [],
 
-	//t = time
-	t = 0,
+	//t = time, d = direction of player
+	t = d = 0,
 
 	//will reference the size of the current heart inside the loop
 	g,
@@ -46,12 +46,26 @@ with(c.style){display='block';margin='auto';border='solid #000';borderWidth='99p
 //Now we use b and c as usual variables, because we won't need body or canvas
 
 
+//Save one function keyword and instead use e.type
+onkeyup = function(e) {
+	e = e.which;
+
+	d = 0;
+
+	//left === 37
+	e-37 || (d = -1);
+
+	//right === 39
+	e-39 || (d = 1);
+};
+
+
 setInterval(function(i) {
 	//Now scope everything to the canvas context, because we are doing a shitload of method calls
 	with(a) {
 		//Iterate over all hearts (h[i] will be undefined at some time, which will then trigger restore())
 		//The translation will keep it centered
-		for(translate(-C((h[8]&&h[8][4]||t)/100)*j/2, 0, save()); b = h[i] || restore(); i++) {
+		for(translate(-C((h[8]&&h[8][4]||t)/100)*j/2, 0, save()); b = h[i]; i++) {
 
 			//Make the heart bigger and keep track of the new size, because we need this value often
 			//This value will also come in handy after the loop is finished, because we need the size of the last heart for removing it
@@ -59,7 +73,7 @@ setInterval(function(i) {
 
 			/*
 			 * blame @jedschmidt and @140bytes for this looking so fucked up :-D
-			 * we are basically saving semicolons by nesting function calls (I know,)
+			 * we are basically saving semicolons by nesting function calls.
 			 * start reading from inner most expression (which is still not exactly the order it executes)!
 			 */
 
@@ -94,25 +108,36 @@ setInterval(function(i) {
 			);
 
 			//We use the 18th heart for clipping. It's no rocket science, but looks OK.
-			i%18 || clip()
+			i-18 || clip()
 		}
 
-		//Append a new element if the array is empty OR if the last element is big enough
-		(!i || g > 1.2) && (h[i]=[1, (c=C(t/100)/2)*j+j, k, 'rgb(' + (c=(200*(c=C(t/15))*c*c*c+40)|0) + ',0,0)', t]);
 
-		//At this point c may be a float if no new heart was added. But that's ok, because than it will be ignored in the rgb color.
-		//setTransform (1, -0.2, 0, 1, 0, 0);
-
-		fillStyle = 'rgb(0, 0, ' + c + ')';
-
-		save();
-		translate(j, k);
-		rotate(.2);
-		translate(-j, -k);
-		fillRect(j-9, k+20, 18, 99, t++);
 		restore();
+
+		c = C(t/100)*j/2+j;
+
+		//Append a new element if the array is empty OR if the last element is big enough
+		(!i || g > 1.2) && (h[i]=[1, c, k, 'rgb(' + (b=(200*(b=C(t/15))*b*b*b+40)|0) + ',0,0)', t]);
+
+		//At this point b may be undefined if no new heart was added. But that's ok, because than it will just be ignored in the rgb color.
+		fillStyle = 'rgb(0, 0, ' + b + ')';
+
+		//save();
+
+		//translate(j, k+50);
+		//rotate(.4*d);
+		//translate(-j, -k-50);
+
+		fillRect(c, k+20, 18, 99, t++);
+
+		//restore();
 
 		//Remove the first element if big enough
 		h[0][0]>j && h.shift();
+
+		x += d;
+		d = 0;
+
+		//restore();
 	}
 }, 33, 0);
