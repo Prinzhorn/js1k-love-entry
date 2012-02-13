@@ -10,6 +10,8 @@
  */
 
 /*
+ * READ BEFORE: Please don't try to understand everything. That's the code I actually wrote, but even after a one day break it was hard to start again. You have been warned.
+ *
  * Props for the idea on how to draw a heart go to: http://www.mathematische-basteleien.de/heart.htm
  * I also had a working version using single pixels and a function (see below), but drawing arcs and lines is WAY faster.
  *
@@ -18,27 +20,28 @@
  * var y = -y/s/.02 + (h.y*50.5/s);
  * (x*x + 2 * (b = (y - .9 * Math.sqrt( x<0?-x:x ))) * b) && (...draw red pixel...)
  *
+ *
  * Each heart is stored inside an array: [size, x, y, color, time added]
  */
 
 var
 	//Set width and height to window size
 	//We use the half of width and height quite some times
-	j = x = (c.width = 999)/2,//x = player position
+	j = (c.width = 999)/2,//x = player position
 	k = (c.height = 400)/2,
 
 	//The array containing the hearts
 	h = [],
 
 	//t = time, d = direction of player
-	t = d = 0,
+	t = d = x = 0,
 
 	//will reference the size of the current heart inside the loop
 	g,
 
 	P = Math.PI,
+	S = Math.sin,
 	C = Math.cos;
-
 
 with(c.style){display='block';margin='auto';border='solid #000';borderWidth='99px 2px'}
 
@@ -65,7 +68,7 @@ setInterval(function(i) {
 	with(a) {
 		//Iterate over all hearts (h[i] will be undefined at some time, which will then trigger restore())
 		//The translation will keep it centered
-		for(translate(-C((h[8]&&h[8][4]||t)/100)*j/2, 0, save()); b = h[i]; i++) {
+		for(translate(-C((h[8] && h[8][4] || t)/100) * j/2, 0, save()); b = h[i]; i++) {
 
 			//Make the heart bigger and keep track of the new size, because we need this value often
 			//This value will also come in handy after the loop is finished, because we need the size of the last heart for removing it
@@ -84,17 +87,17 @@ setInterval(function(i) {
 					//The right lower part of the "peak"
 					lineTo(
 						//Parameters for the line segment (x, y + size*2)
-						b[1], b[2] + g*2,
+						b[1], b[2] + g * 2,
 
 						//Right arc/curve of the heart
 						arc(
 							//Parameters for drawing the right (x + size, y - size, some radian, some radian)
-							b[1] + g, c = b[2] - g, g, P, P*2.2,
+							b[1] + g, c = b[2] - g, g, P, P * 2.2,
 
 							//Left arc/curve of the heart
 							arc(
 								//Parameters for drawing the left arc (x - size, y - size, some radian, some radian)
-								b[1] - g, c, g, P*.8, P*2,
+								b[1] - g, c, g, P * .8, P * 2,
 
 								//Start a new path for our heart
 								beginPath(
@@ -108,16 +111,17 @@ setInterval(function(i) {
 			);
 
 			//We use the 18th heart for clipping. It's no rocket science, but looks OK.
-			i-18 || clip()
+			i - 19 || save() || clip()
 		}
-
 
 		restore();
 
-		c = C(t/100)*j/2+j;
+		c = C(t/100) * j/2 + j;
+
+		b = (200 * (b = C(t/15)) * b * b * b + 40) | 0;
 
 		//Append a new element if the array is empty OR if the last element is big enough
-		(!i || g > 1.2) && (h[i]=[1, c, k, 'rgb(' + (b=(200*(b=C(t/15))*b*b*b+40)|0) + ',0,0)', t]);
+		(!i || g > 1.2) && (h[i] = [1, c, k, 'rgb(' + b + ',0,0)', t]);
 
 		//At this point b may be undefined if no new heart was added. But that's ok, because than it will just be ignored in the rgb color.
 		fillStyle = 'rgb(0, 0, ' + b + ')';
@@ -128,15 +132,24 @@ setInterval(function(i) {
 		//rotate(.4*d);
 		//translate(-j, -k-50);
 
-		fillRect(c, k+20, 18, 99, t++);
+		c = S((t+x)/100) * j/2 + j;
 
-		//restore();
+		//The player
+		//fillRect(c, k + 20, 18, 99, t++);
+		save();
+		scale(1, .5);
+		font = '150px Arial';
+		fillText('↑', c - 50, k*2 + 99);
+		restore();
+		restore();
 
 		//Remove the first element if big enough
-		h[0][0]>j && h.shift();
+		h[0][0] > j && h.shift();
 
-		x += d;
+		x += d*10;
 		d = 0;
+
+		t++;
 
 		//restore();
 	}
