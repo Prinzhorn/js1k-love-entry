@@ -67,8 +67,8 @@ setInterval(function(i) {
 		save();
 
 		//Iterate over all hearts
-		//The translation will keep it centered
-		for(translate(-C(t/100) * j/2 + j, 0); b = h[i]; i++) {
+		//The translation will keep it centered around the 8th element
+		for(translate(-C((h[8] && h[8][4] ||  t)/100) * j/2 + j, 0); b = h[i]; i++) {
 		//for(save(); b = h[i]; i++) {
 
 			//Make the heart bigger and keep track of the new size, because we need this value often
@@ -125,7 +125,7 @@ setInterval(function(i) {
 
 		restore(
 			//Append a new heart
-			h[i] = [1, c, k, 'rgb(' + b + ',0,0)']
+			h[i] = [1, c, k, 'rgb(' + b + ',0,0)', t]
 		);
 
 		fillStyle = 'rgb(0, 0, ' + b + ')';
