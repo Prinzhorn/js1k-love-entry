@@ -1,15 +1,4 @@
 /*
- * TODO:
- * +clipping (more curvy turns)
- * -remove sine/cosine in favour of heart shaped turns (maybe not, because steering on one axis is enough). BUT we could spice it up by not using the standard sine-
- * -add an arrow
- * -make it controllable
- * -collision detection
- * -highscore (t (number of ticks))
- * -tweet highscore
- */
-
-/*
  * READ BEFORE: Please don't try to understand everything. That's the code I actually wrote, but even after a one day break it was hard to start again. You have been warned.
  *
  * Props for the idea on how to draw a heart go to: http://www.mathematische-basteleien.de/heart.htm
@@ -39,9 +28,9 @@ var
 	//will reference the size of the current heart inside the loop
 	g,
 
-	P = Math.PI,
-	S = Math.sin,
-	C = Math.cos;
+	M = Math,
+	P = M.PI,
+	C = M.cos;
 
 with(c.style){display='block';margin='auto';border='solid #000';borderWidth='99px 2px'}
 
@@ -49,26 +38,38 @@ with(c.style){display='block';margin='auto';border='solid #000';borderWidth='99p
 //Now we use b and c as usual variables, because we won't need body or canvas
 
 
-//Save one function keyword and instead use e.type
-onkeyup = function(e) {
-	e = e.which;
+onkeydown = function(e) {
+	if(d) return;
 
-	d = 0;
+	e = e.which;
 
 	//left === 37
 	e-37 || (d = -1);
 
 	//right === 39
 	e-39 || (d = 1);
-};
+}
+
+onkeyup = function() {d=0}
 
 
 setInterval(function(i) {
 	//Now scope everything to the canvas context, because we are doing a shitload of method calls
 	with(a) {
-		//Iterate over all hearts (h[i] will be undefined at some time, which will then trigger restore())
+
+		save();
+		translate(j, k+50);
+		rotate(.05*d);
+		translate(-j, -k-50);
+
+		clearRect(0, 0, j*2, k*2);
+
+		save();
+
+		//Iterate over all hearts
 		//The translation will keep it centered
-		for(translate(-C((h[8] && h[8][4] || t)/100) * j/2, 0, save()); b = h[i]; i++) {
+		for(translate(-C(t/100) * j/2 + j, 0); b = h[i]; i++) {
+		//for(save(); b = h[i]; i++) {
 
 			//Make the heart bigger and keep track of the new size, because we need this value often
 			//This value will also come in handy after the loop is finished, because we need the size of the last heart for removing it
@@ -76,7 +77,7 @@ setInterval(function(i) {
 
 			/*
 			 * blame @jedschmidt and @140bytes for this looking so fucked up :-D
-			 * we are basically saving semicolons by nesting function calls.
+			 * we are basically saving semicolons by nesting function calls (only makes sense if function doesn't expect ANY params).
 			 * start reading from inner most expression (which is still not exactly the order it executes)!
 			 */
 
@@ -110,47 +111,51 @@ setInterval(function(i) {
 				)
 			);
 
-			//We use the 18th heart for clipping. It's no rocket science, but looks OK.
-			i - 19 || save() || clip()
+			//We use the 19th heart for clipping. It's no rocket science, but looks OK.
+			i - 38 || clip(save())
 		}
 
-		restore();
+		i>38 && restore();
 
-		c = C(t/100) * j/2 + j;
+		c = C(t++/100) * j/2;
 
-		b = (200 * (b = C(t/15)) * b * b * b + 40) | 0;
+		b = (200 * (b = C(t/15)) * b * b * b + 50) | 0;
 
-		//Append a new element if the array is empty OR if the last element is big enough
-		(!i || g > 1.2) && (h[i] = [1, c, k, 'rgb(' + b + ',0,0)', t]);
+		//(!i || g > 1) && (h[i] = [1, c, k, 'rgb(' + b + ',0,0)', t]);
 
-		//At this point b may be undefined if no new heart was added. But that's ok, because than it will just be ignored in the rgb color.
+		restore(
+			//Append a new heart
+			h[i] = [1, c, k, 'rgb(' + b + ',0,0)']
+		);
+
 		fillStyle = 'rgb(0, 0, ' + b + ')';
-
-		//save();
-
-		//translate(j, k+50);
-		//rotate(.4*d);
-		//translate(-j, -k-50);
-
-		c = S((t+x)/100) * j/2 + j;
 
 		//The player
 		//fillRect(c, k + 20, 18, 99, t++);
-		save();
+		save(
+			c = -c*2 + j*2 - 50 + x
+		);
+
 		scale(1, .5);
-		font = '150px Arial';
-		fillText('↑', c - 50, k*2 + 99);
-		restore();
-		restore();
+
+		//We use "a" as font family, because one is required and "a" is short (will fallback)
+		font = '150px a';
+
+		restore(
+			fillText('↑', c, k*2 + 150)
+		);
 
 		//Remove the first element if big enough
 		h[0][0] > j && h.shift();
 
-		x += d*10;
-		d = 0;
+		restore(
+			x += d*6
+		);
 
-		t++;
-
-		//restore();
+		if(M.abs(c - j + 50) > 200) {
+			alert('You hit the wall..score: ' + t);
+			d = t = x = 0;
+			h = [];
+		}
 	}
 }, 33, 0);
