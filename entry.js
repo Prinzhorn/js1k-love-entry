@@ -1,8 +1,9 @@
 /*
- * READ BEFORE: Please don't try to understand everything. That's the code I actually wrote, but even after a one day break it was hard to start again. You have been warned.
+ * READ BEFORE: Please don't try to understand everything. That's the code I actually handcrafted, but even after a one day break it was hard to start again. You have been warned.
  *
  * Props for the idea on how to draw a heart go to: http://www.mathematische-basteleien.de/heart.htm
  * I also had a working version using single pixels and a function (see below), but drawing arcs and lines is WAY faster.
+ * The same goes for drawing text, which is WAY to slow.
  *
  * Original heart function
  * var x = x/s/.02 - (h.x*50/s);
@@ -16,13 +17,13 @@
 var
 	//Set width and height to window size
 	//We use the half of width and height quite some times
-	j = (c.width = 999)/2,//x = player position
+	j = (c.width = 999)/2,
 	k = (c.height = 400)/2,
 
 	//The array containing the hearts
 	h = [],
 
-	//t = time, d = direction of player
+	//t = time, d = direction of player (-1,0,+1), x = player position
 	t = d = x = 0,
 
 	//will reference the size of the current heart inside the loop
@@ -32,6 +33,8 @@ var
 	P = M.PI,
 	C = M.cos;
 
+
+//Give me that cinema feeling
 with(c.style){display='block';margin='auto';border='solid #000';borderWidth='99px 2px'}
 
 
@@ -39,15 +42,15 @@ with(c.style){display='block';margin='auto';border='solid #000';borderWidth='99p
 
 
 onkeydown = function(e) {
-	if(d) return;
+	if(!d) {
+		e = e.which;
 
-	e = e.which;
+		//left === 37
+		e-37 || (d = -1);
 
-	//left === 37
-	e-37 || (d = -1);
-
-	//right === 39
-	e-39 || (d = 1);
+		//right === 39
+		e-39 || (d = 1)
+	}
 }
 
 onkeyup = function() {d=0}
@@ -56,15 +59,9 @@ onkeyup = function() {d=0}
 setInterval(function(i) {
 	//Now scope everything to the canvas context, because we are doing a shitload of method calls
 	with(a) {
-
-		save();
-		translate(j, k+50);
-		rotate(.05*d);
-		translate(-j, -k-50);
-
-		clearRect(0, 0, j*2, k*2);
-
-		save();
+		save(
+			clearRect(0, 0, j*2, k*2)
+		);
 
 		//Iterate over all hearts
 		//The translation will keep it centered around the 8th element
@@ -138,12 +135,21 @@ setInterval(function(i) {
 
 		scale(1, .5);
 
-		//We use "a" as font family, because one is required and "a" is short (will fallback)
-		font = '150px a';
+		//cursive font family gives us some perspective look
+		font = '150px cursive';
+
+		save();
+		//Rotate the arrow when moving left or right
+		translate(j, k+50);
+		rotate(.05*d);
+		translate(-j, -k-50);
 
 		restore(
 			fillText('↑', c, k*2 + 150)
 		);
+
+		//Render the score
+		fillText(t, 10, 150);
 
 		//Remove the first element if big enough
 		h[0][0] > j && h.shift();
@@ -153,7 +159,7 @@ setInterval(function(i) {
 		);
 
 		if(M.abs(c - j + 50) > 200) {
-			alert('You hit the wall..score: ' + t);
+			alert('DOH! You hit the wall...\nYour score: ' + t);
 			d = t = x = 0;
 			h = [];
 		}
