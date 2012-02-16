@@ -35,7 +35,7 @@ var
 
 
 //Give me that cinema feeling
-with(c.style){display='block';margin='auto';border='solid #000';borderWidth='99px 2px'}
+with(c.style){display='block';margin='auto';border='solid #000';borderWidth='99px 2px';background='#000'}
 
 
 //Now we use b and c as usual variables, because we won't need body or canvas
@@ -60,6 +60,7 @@ setInterval(function(i) {
 	//Now scope everything to the canvas context, because we are doing a shitload of method calls
 	with(a) {
 		save(
+			//We only need clearRect for the first seconds when the hearts don't fill up the whole space
 			clearRect(0, 0, j*2, k*2)
 		);
 
@@ -78,6 +79,18 @@ setInterval(function(i) {
 			 * start reading from inner most expression (which is still not exactly the order it executes)!
 			 */
 
+			//Start a new path for our heart
+			beginPath(
+				//Some decent black thin line
+				fillStyle = b[3]
+			);
+
+			//Left arc/curve of the heart
+			arc(b[1] - g, c = b[2] - g, g, P * .8, P * 2);
+
+			//Right arc/curve of the heart
+			arc(b[1] + g, c, g, P, P * 2.2)
+
 			//At the end, fill the heart
 			fill(
 				//The left part (close the heart). Only needed because we are drawing a stroke! Wouldn't for just fills.
@@ -85,38 +98,23 @@ setInterval(function(i) {
 					//The right lower part of the "peak"
 					lineTo(
 						//Parameters for the line segment (x, y + size*2)
-						b[1], b[2] + g * 2,
-
-						//Right arc/curve of the heart
-						arc(
-							//Parameters for drawing the right (x + size, y - size, some radian, some radian)
-							b[1] + g, c = b[2] - g, g, P, P * 2.2,
-
-							//Left arc/curve of the heart
-							arc(
-								//Parameters for drawing the left arc (x - size, y - size, some radian, some radian)
-								b[1] - g, c, g, P * .8, P * 2,
-
-								//Start a new path for our heart
-								beginPath(
-									//Some decent black thin line
-									fillStyle = b[3]
-								)
-							)
-						)
+						b[1], b[2] + g * 2
 					)
 				)
 			);
 
-			//We use the 19th heart for clipping. It's no rocket science, but looks OK.
+			//We use the 38th heart for clipping. It's no rocket science, but looks OK.
 			i - 38 || clip(save())
 		}
 
+		//Only restore if we clipped
 		i>38 && restore();
 
+		//Increment the time value and compute sine for new hearts position
 		c = C(t++/100) * j/2;
 
-		b = (200 * (b = C(t/15)) * b * b * b + 50) | 0;
+		//Calculate the color (used for hearts and for arrow), based on sine and some random spice
+		b = (210 * (b = C(t/15)) * b * b * b + 24 + M.random()*30) | 0;
 
 		//(!i || g > 1) && (h[i] = [1, c, k, 'rgb(' + b + ',0,0)', t]);
 
@@ -125,7 +123,7 @@ setInterval(function(i) {
 			h[i] = [1, c, k, 'rgb(' + b + ',0,0)', t]
 		);
 
-		fillStyle = 'rgb(0, 0, ' + b + ')';
+		fillStyle = 'rgb(' + b + ',' + b + ',' + b + ')';
 
 		//The player
 		//fillRect(c, k + 20, 18, 99, t++);
