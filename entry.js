@@ -17,8 +17,9 @@
 var
 	//Set width and height to window size
 	//We use the half of width and height quite some times
-	j = (c.width = 999)/2,
-	k = (c.height = 400)/2,
+	//p = paused or not (truthy)
+	j = (c.width = 998)/2,
+	p = k = (c.height = 400)/2,
 
 	//The array containing the hearts
 	h = [],
@@ -42,9 +43,12 @@ with(c.style){display='block';margin='auto';border='solid #000';borderWidth='99p
 
 
 onkeydown = function(e) {
-	if(!d) {
-		e = e.which;
+	e = e.which;
 
+	//'p' === 80
+	p = e-80;
+
+	if(!d) {
 		//left === 37
 		e-37 || (d = -1);
 
@@ -53,12 +57,12 @@ onkeydown = function(e) {
 	}
 }
 
-onkeyup = function() {d=0}
+onkeyup = function() {d = 0}
 
 
 setInterval(function(i) {
 	//Now scope everything to the canvas context, because we are doing a shitload of method calls
-	with(a) {
+	if(p) with(a) {
 		save(
 			//We only need clearRect for the first seconds when the hearts don't fill up the whole space
 			clearRect(0, 0, j*2, k*2)
@@ -76,7 +80,6 @@ setInterval(function(i) {
 			/*
 			 * blame @jedschmidt and @140bytes for this looking so fucked up :-D
 			 * we are basically saving semicolons by nesting function calls (only makes sense if function doesn't expect ANY params).
-			 * start reading from inner most expression (which is still not exactly the order it executes)!
 			 */
 
 			//Start a new path for our heart
@@ -123,39 +126,44 @@ setInterval(function(i) {
 			h[i] = [1, c, k, 'rgb(' + b + ',0,0)', t]
 		);
 
+		//Arrow will be gray
 		fillStyle = 'rgb(' + b + ',' + b + ',' + b + ')';
 
-		//The player
-		//fillRect(c, k + 20, 18, 99, t++);
 		save(
+			//Players position
 			c = -c*2 + j*2 - 50 + x
 		);
 
 		scale(1, .5);
 
-		//cursive font family gives us some perspective look
-		font = '150px cursive';
+		save(
+			//cursive font family gives us some perspective look
+			font = '150px cursive'
+		);
 
-		save();
+
 		//Rotate the arrow when moving left or right
 		translate(j, k+50);
 		rotate(.05*d);
 		translate(-j, -k-50);
 
 		restore(
+			//Draw the player
 			fillText('↑', c, k*2 + 150)
 		);
 
 		//Render the score
-		fillText(t, 10, 150);
+		fillText(t>=1024 ? '>1k' : t, 10, 150);
 
 		//Remove the first element if big enough
 		h[0][0] > j && h.shift();
 
 		restore(
+			//Modify player offset depending on direction
 			x += d*6
 		);
 
+		//Reset game when hitting wall
 		if(M.abs(c - j + 50) > 200) {
 			alert('DOH! You hit the wall...\nYour score: ' + t);
 			d = t = x = 0;
