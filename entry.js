@@ -1,6 +1,4 @@
 /*
- * READ BEFORE: Please don't try to understand everything. That's the code I actually handcrafted, but even after a one day break it was hard to start again. You have been warned.
- *
  * Props for the idea on how to draw a heart go to: http://www.mathematische-basteleien.de/heart.htm
  * I also had a working version using single pixels and a function (see below), but drawing arcs and lines is WAY faster.
  * The same goes for drawing text, which is WAY to slow.
@@ -54,6 +52,7 @@ onkeydown = function(e) {
 
 		//right === 39
 		e-39 || (d = 1)
+
 	}
 }
 
@@ -65,7 +64,7 @@ setInterval(function(i) {
 	if(p) with(a) {
 		save(
 			//We only need clearRect for the first seconds when the hearts don't fill up the whole space
-			clearRect(0, 0, j*2, k*2)
+			clearRect(i = 0, 0, j*2, k*2)
 		);
 
 		//Iterate over all hearts
@@ -165,9 +164,9 @@ setInterval(function(i) {
 
 		//Reset game when hitting wall
 		if(M.abs(c - j + 50) > 200) {
-			alert('DOH! You hit the wall...\nYour score: ' + t);
+			alert('DOH! You hit the wall.\nYour score: ' + t);
 			d = t = x = 0;
 			h = [];
 		}
 	}
-}, 33, 0);
+}, 33);
